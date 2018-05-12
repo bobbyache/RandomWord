@@ -1,0 +1,33 @@
+﻿<Window x:Class="Gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Gui"
+        mc:Ignorable="d"
+        Title="MainWindow" WindowState="Maximized" Height="350" Width="525">
+    <StackPanel>
+        <Menu Height="22" Name="menu1" Width="200" Margin="10, 10, 5, 5" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gray" BorderThickness="2">
+
+            <Menu.BitmapEffect>
+
+                <DropShadowBitmapEffect />
+
+            </Menu.BitmapEffect>
+            
+            <MenuItem Header="Menu">
+
+                <MenuItem Header="Get Words..." Click="MenuItem_Click"/>
+                <MenuItem Header="Clear" Click="Clear_Click"/>
+                <Separator />
+                <MenuItem Header="Exit" Click="Exit_Click"/>
+
+            </MenuItem>
+
+        </Menu>
+        
+        
+
+        <Canvas Name="WordCanvas" Background="WhiteSmoke" Margin= "10, 10,10,10" AllowDrop="True" />
+    </StackPanel>
+</Window>
