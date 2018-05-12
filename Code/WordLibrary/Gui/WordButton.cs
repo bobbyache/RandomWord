@@ -37,11 +37,22 @@ namespace Gui
         protected override void OnContentChanged(object oldContent, object newContent)
         {
             base.OnContentChanged(oldContent, newContent);
+            ResizeMe();
+        }
+
+        public void SetFont(FontFamily fontFamily, double fontSize)
+        {
+            this.FontSize = fontSize;
+            this.FontFamily = fontFamily;
+            ResizeMe();
+        }
+
+        private void ResizeMe()
+        {
             Size size = MeasureTextSize(this.Content.ToString(), this.FontFamily, this.FontStyle, this.FontWeight, this.FontStretch, this.FontSize);
             this.Width = size.Width + 50;
             this.Height = size.Height + 50;
         }
-
         
 
         /// <summary>

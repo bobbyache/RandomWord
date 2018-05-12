@@ -20,13 +20,14 @@
                 <MenuItem Header="Get Words..." Click="MenuItem_Click"/>
                 <MenuItem Header="Clear" Click="Clear_Click"/>
                 <Separator />
+                <MenuItem Header="Font Style..." Click="FontStyle_Click" />
+                <Separator />
                 <MenuItem Header="Exit" Click="Exit_Click"/>
 
             </MenuItem>
 
         </Menu>
-        
-        
+        <TextBox Name="ManualWordsTextBox" KeyUp="TextBox_KeyUp" Padding="5"></TextBox>
 
         <Canvas Name="WordCanvas" Background="WhiteSmoke" Margin= "10, 10,10,10" AllowDrop="True" />
     </StackPanel>

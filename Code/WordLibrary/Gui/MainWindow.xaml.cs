@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -22,7 +23,10 @@ namespace Gui
     /// </summary>
     public partial class MainWindow : Window
     {
-        Control draggedItem;
+        private FontFamily fontFamily;
+        private double fontSize;
+
+        WordButton draggedItem;
         Point itemRelativePosition;
         bool IsDragging;
         List<WordButton> buttons = new List<WordButton>();
@@ -30,6 +34,9 @@ namespace Gui
         public MainWindow()
         {
             InitializeComponent();
+
+            fontFamily = new FontFamily(ConfigSettings.FontFamily);
+            fontSize = ConfigSettings.FontSize;
             IsDragging = false;
         }
 
@@ -45,7 +52,9 @@ namespace Gui
                     button.PreviewMouseLeftButtonDown += btn_PreviewMouseLeftButtonDown;
                     button.PreviewMouseLeftButtonUp += btn_PreviewMouseLeftButtonUp;
                     button.PreviewMouseMove += btn_PreviewMouseMove;
-                    //button.Click += Button_Click;
+                    button.KeyUp += Button_KeyUp;
+                    
+                    button.SetFont(fontFamily, fontSize);
 
                     buttons.Add(button);
                     WordCanvas.Children.Add(button);
@@ -56,20 +65,26 @@ namespace Gui
             }
         }
 
+        private void Button_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+                WordCanvas.Children.Remove((UIElement)sender);
+        }
+
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
-
+            WordCanvas.Children.Clear();
         }
 
         private void btn_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             IsDragging = true;
-            draggedItem = (Button)sender;
+            draggedItem = (WordButton)sender;
             itemRelativePosition = e.GetPosition(draggedItem);
         }
 
@@ -84,18 +99,18 @@ namespace Gui
         private void MenuItem_Click(object sender, RoutedEventArgs e)
 
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
                 string[] words = File.ReadAllLines(openFileDialog.FileName);
-                MessageBoxResult result = MessageBox.Show(this, "Would you like to remove the currently loaded set?", "Load Words", MessageBoxButton.YesNo);
+                MessageBoxResult result = System.Windows.MessageBox.Show(this, "Would you like to remove the currently loaded set?", "Load Words", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                     WordCanvas.Children.Clear();
                 LoadWords(words);
             }
         }
 
-        private void btn_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void btn_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (!IsDragging)
                 return;
@@ -104,6 +119,31 @@ namespace Gui
 
             Canvas.SetTop(draggedItem, canvasRelativePosition.Y - itemRelativePosition.Y);
             Canvas.SetLeft(draggedItem, canvasRelativePosition.X - itemRelativePosition.X);
+        }
+
+        private void TextBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                string[] words = ManualWordsTextBox.Text.Split(new char[] { ',' });
+                LoadWords(words);
+                ManualWordsTextBox.Clear();
+            }
+        }
+
+        private void FontStyle_Click(object sender, RoutedEventArgs e)
+        {
+            FontDialog fontDialog = new FontDialog();
+            fontDialog.Font = new System.Drawing.Font(fontFamily.ToString(), (float)fontSize);
+            DialogResult result = fontDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                fontFamily = new FontFamily(fontDialog.Font.FontFamily.Name);
+                foreach (WordButton button in WordCanvas.Children.OfType<WordButton>())
+                {
+                    button.SetFont(fontFamily, fontSize);
+                }
+            }
         }
     }
 }
