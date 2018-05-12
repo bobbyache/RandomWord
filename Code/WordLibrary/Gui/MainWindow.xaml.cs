@@ -76,6 +76,35 @@ namespace Gui
             System.Windows.Application.Current.Shutdown();
         }
 
+        private void SaveAs_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> words = new List<string>();
+
+            foreach (WordButton button in WordCanvas.Children.OfType<WordButton>())
+            {
+                words.Add(button.Content.ToString());
+            }
+
+            string serializedWords = string.Join(Environment.NewLine, words);
+
+            System.Windows.Forms.SaveFileDialog saveDialog = new System.Windows.Forms.SaveFileDialog();
+            saveDialog.Filter = "JJB Files *.jjb (*.jjb)|*.jjb";
+            saveDialog.DefaultExt = "*.jjb";
+            saveDialog.Title = string.Format("Save File As...");
+            saveDialog.AddExtension = true;
+            saveDialog.FilterIndex = 0;
+            saveDialog.CheckPathExists = true;
+
+            DialogResult result = saveDialog.ShowDialog();
+
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                File.WriteAllText(saveDialog.FileName, serializedWords);
+            }
+        }
+
+        
+
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             WordCanvas.Children.Clear();
@@ -100,6 +129,13 @@ namespace Gui
 
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "JJB Files *.jjb (*.jjb)|*.jjb";
+            openFileDialog.DefaultExt = "*.jjb";
+            openFileDialog.Title = string.Format("Open File...");
+            openFileDialog.AddExtension = true;
+            openFileDialog.FilterIndex = 0;
+            openFileDialog.CheckPathExists = true;
+
             if (openFileDialog.ShowDialog() == true)
             {
                 string[] words = File.ReadAllLines(openFileDialog.FileName);
@@ -125,7 +161,7 @@ namespace Gui
         {
             if (e.Key == Key.Return)
             {
-                string[] words = ManualWordsTextBox.Text.Split(new char[] { ',' });
+                string[] words = ManualWordsTextBox.Text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 LoadWords(words);
                 ManualWordsTextBox.Clear();
             }
