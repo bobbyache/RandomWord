@@ -35,6 +35,7 @@ namespace Gui
         {
             InitializeComponent();
 
+            this.Title = SetTitle();
             fontFamily = new FontFamily(ConfigSettings.FontFamily);
             fontSize = ConfigSettings.FontSize;
             IsDragging = false;
@@ -100,6 +101,7 @@ namespace Gui
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 File.WriteAllText(saveDialog.FileName, serializedWords);
+                this.Title = SetTitle(saveDialog.FileName);
             }
         }
 
@@ -143,7 +145,13 @@ namespace Gui
                 if (result == MessageBoxResult.Yes)
                     WordCanvas.Children.Clear();
                 LoadWords(words);
+                this.Title = SetTitle(openFileDialog.FileName);
             }
+        }
+
+        private string SetTitle(string filePath = null)
+        {
+            return string.IsNullOrEmpty(filePath) ? ConfigSettings.AssemblyTitle : $"{ConfigSettings.AssemblyTitle} [{System.IO.Path.GetFileName(filePath)}]";
         }
 
         private void btn_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
