@@ -17,7 +17,7 @@ namespace Gui
             Id = Guid.NewGuid().ToString();
             FontSize = 24;
             Canvas.SetZIndex(this, 0);
-            ToolTip = Canvas.GetZIndex(this).ToString();
+
             this.GotFocus += (s, e) =>
             {
                 FontWeight = FontWeights.Bold;
@@ -29,7 +29,6 @@ namespace Gui
                 FontWeight = FontWeights.Normal;
                 this.Foreground = new SolidColorBrush(Colors.Black);
                 Canvas.SetZIndex(this, 99);
-                ToolTip = Canvas.GetZIndex(this).ToString();
             };
         }
         public string Id { get; private set; }
